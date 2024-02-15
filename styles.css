@@ -1,0 +1,241 @@
+*, *::after, *::before{
+    box-sizing: border-box;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+body {
+    background:linear-gradient(to right, hsl(34, 51%, 86%),hsl(39, 65%, 78%));
+    display: flex;  
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /**disappear scroll bar**/
+    background-image: url('MerryXmas.jpg');
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+	margin: 0;
+}
+
+
+
+#clock2 {
+      font-size: 1rem;
+      color: rgba(64, 64, 64, 0.8);
+	  position: absolute;  
+	  width: 100px;
+      height: 100px;
+	  font-family:Tahoma;
+	  text-align:center;
+	  z-index: 12;
+}
+.clock {
+    width: 350px;
+    height: 350px;
+    background-color: rgba(191, 128, 64, 0.8);
+    border-radius: 50%;
+    border: 3.5px solid rgb(0, 0, 0);
+    position: relative;
+}
+.clock .number {
+    --rotation: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    /**background-color: red;1. added first 2. remove secondly**/
+    text-align: center;
+    transform: rotate(var(--rotation));
+    font-size: 2rem; /**change the font-size of the number in clock**/
+    font-family: Tahoma;
+    z-index: 12;
+}
+.clock .number1 { --rotation: 30deg; }
+.clock .number2 { --rotation: 60deg; }
+.clock .number3 { --rotation: 90deg; }
+.clock .number4 { --rotation: 120deg; }
+.clock .number5 { --rotation: 150deg; }
+.clock .number6 { --rotation: 180deg; }
+.clock .number7 { --rotation: 210deg; }
+.clock .number8 { --rotation: 240deg; }
+.clock .number9 { --rotation: 270deg; }
+.clock .number10 { --rotation: 300deg; }
+.clock .number11 { --rotation: 330deg; }
+
+.clock .flipNumber1 { transform: rotate(330deg);}
+.clock .flipNumber2 { transform: rotate(300deg);}
+.clock .flipNumber3 { transform: rotate(270deg);}
+.clock .flipNumber4 { transform: rotate(240deg);}
+.clock .flipNumber5 { transform: rotate(210deg);}
+.clock .flipNumber6 { transform: rotate(180deg);}
+.clock .flipNumber7 { transform: rotate(150deg);}
+.clock .flipNumber8 { transform: rotate(120deg);}
+.clock .flipNumber9 { transform: rotate(90deg);}
+.clock .flipNumber10 { transform: rotate(60deg);}
+.clock .flipNumber11 { transform: rotate(30deg);}
+
+.mark {
+    width: 300px;
+    height: 300px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    border: 3px solid rgb(0,0,0);
+    position: absolute;
+}
+
+.mark .tick {
+    --rotation2: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    
+    /**background-color: red; 1. added first 2. remove secondly**/
+    text-align: center;
+    transform: rotate(var(--rotation2));
+    font-size: 0.5rem; /**change the font-size of the number in clock**/
+    color:rgb(168, 167, 167);
+    font-family: Tahoma;
+}
+.mark .tick1 { --rotation2: 6deg; }
+.mark .tick2 { --rotation2: 12deg; }
+.mark .tick3 { --rotation2: 18deg; }
+.mark .tick4 { --rotation2: 24deg; }
+.mark .tick5 { --rotation2: 30deg;
+    color:rgb(80, 80,80);
+    font-size: 0.8rem;
+}
+.mark .tick6 { --rotation2: 36deg; }
+.mark .tick7 { --rotation2: 42deg; }
+.mark .tick8 { --rotation2: 48deg; }
+.mark .tick9 { --rotation2: 54deg; }
+.mark .tick10 { --rotation2: 60deg; 
+    color:rgb(80, 80,80);
+    font-size: 0.8rem;
+}
+.mark .tick11 { --rotation2: 66deg; }
+.mark .tick12 { --rotation2: 72deg; }
+.mark .tick13 { --rotation2: 78deg; }
+.mark .tick14 { --rotation2: 84deg; }
+.mark .tick15 { --rotation2: 90deg;
+    color:rgb(80, 80,80);
+    font-size: 0.8rem;
+}
+.mark .tick16 { --rotation2: 96deg; }
+.mark .tick17 { --rotation2: 102deg; }
+.mark .tick18 { --rotation2: 108deg; }
+.mark .tick19 { --rotation2: 114deg; }
+.mark .tick20 { --rotation2: 120deg; 
+    color:rgb(80, 80,80);
+    font-size: 0.8rem;
+}
+.mark .tick21 { --rotation2: 126deg; }
+.mark .tick22 { --rotation2: 132deg; }
+.mark .tick23 { --rotation2: 138deg; }
+.mark .tick24 { --rotation2: 144deg; }
+.mark .tick25 { --rotation2: 150deg; 
+    color:rgb(80, 80,80);
+    font-size:0.8rem;
+}
+.mark .tick26 { --rotation2: 156deg; }
+.mark .tick27 { --rotation2: 162deg; }
+.mark .tick28 { --rotation2: 168deg; }
+.mark .tick29 { --rotation2: 174deg; }
+.mark .tick30 { --rotation2: 180deg; 
+    color:rgb(80, 80,80);
+    font-size: 0.8rem;
+}
+.mark .tick31 { --rotation2: 186deg; }
+.mark .tick32 { --rotation2: 192deg; }
+.mark .tick33 { --rotation2: 198deg; }
+.mark .tick34 { --rotation2: 204deg; }
+.mark .tick35 { --rotation2: 210deg;
+    color:rgb(80, 80,80);
+    font-size: 0.8rem;
+}
+.mark .tick36 { --rotation2: 216deg; }
+.mark .tick37 { --rotation2: 222deg; }
+.mark .tick38 { --rotation2: 228deg; }
+.mark .tick39 { --rotation2: 234deg; }
+.mark .tick40 { --rotation2: 240deg; 
+    color:rgb(80, 80,80);
+    font-size: 0.8rem;
+}
+.mark .tick41 { --rotation2: 246deg; }
+.mark .tick42 { --rotation2: 252deg; }
+.mark .tick43 { --rotation2: 258deg; }
+.mark .tick44 { --rotation2: 264deg; }
+.mark .tick45 { --rotation2: 270deg; 
+    color:rgb(80, 80,80);
+    font-size: 0.8rem;
+}
+.mark .tick46 { --rotation2: 276deg; }
+.mark .tick47 { --rotation2: 282deg; }
+.mark .tick48 { --rotation2: 288deg; }
+.mark .tick49 { --rotation2: 294deg; }
+.mark .tick50 { --rotation2: 300deg; 
+    color:rgb(80, 80,80);
+    font-size: 0.8rem;
+}
+.mark .tick51 { --rotation2: 306deg; }
+.mark .tick52 { --rotation2: 312deg; }
+.mark .tick53 { --rotation2: 318deg; }
+.mark .tick54 { --rotation2: 324deg; }
+.mark .tick55 { --rotation2: 330deg; 
+    color:rgb(80, 80,80);
+    font-size: 0.8rem;
+}
+.mark .tick56 { --rotation2: 336deg; }
+.mark .tick57 { --rotation2: 342deg; }
+.mark .tick58 { --rotation2: 348deg; }
+.mark .tick59 { --rotation2: 354deg; }
+.mark .tick60 { --rotation2: 360deg;
+    color:rgb(80, 80,80);
+    font-size: 0.8rem;
+}
+
+
+
+.clock .hand {
+    --rotation: 0;
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    
+    /**width: 10px; not all of the hands, each one is unique**/
+    /**height: 50%; not all of the hands, each one is unique**/
+    background-color: black;
+    border: 1px solid rgb(124, 79, 8);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    transform-origin: bottom;
+    z-index: 10;
+    transform: translateX(-50%) rotate(calc(var(--rotation)*1deg));
+}
+.clock::after{
+    content:'';
+    position: absolute;
+    background-color: black;
+    z-index: 11;
+    width: 15px;
+    height: 15px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+
+
+}
+.clock .hand.second {
+    width: 2px;
+    height: 42.5%;
+    background-color: rgba(255, 0, 0, 0.88);
+}
+.clock .hand.minute {
+    width: 6px;
+    height: 39%;
+    background-color: rgba(0, 0, 145, 0.88);
+}
+.clock .hand.hour {
+    width: 6px;
+    height: 30%;
+    background-color: rgba(0, 0, 145, 0.88);
+}
