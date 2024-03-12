@@ -8,7 +8,7 @@ body {
     display: flex;  
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: 50vh;
     overflow: hidden; /**disappear scroll bar**/
     background-image: url('Family.jpg');
     background-size: contain; 
