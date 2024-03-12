@@ -1,5 +1,5 @@
 setInterval(setClock, 1)
-setInterval(updateClock, 1)
+setInterval(updateClock, 1000)
 
 
 const hourhand = document.querySelector('[hour-hand]')
@@ -37,9 +37,6 @@ function updateClock() {
 	  var dateString = year + "-" + month + "-" + day + "<br>";
 	  dateString+=days[now.getDay()];  
     document.getElementById("clock2").innerHTML = dateString;
-}
-function removeBubble(bubble) {
-  bubble.style.display = 'none';
 }
 
 setClock()
