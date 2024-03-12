@@ -11,9 +11,9 @@ body {
     min-height: 100vh;
     overflow: hidden; /**disappear scroll bar**/
     background-image: url('Family.jpg');
-    background-size: cover; 
+    background-size: contain; 
     background-position: center; 
-    background-repeat: no-repeat; 
+    background-repeat: repeat; 
 	margin: 0;
 }
 
