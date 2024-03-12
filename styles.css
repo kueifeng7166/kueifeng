@@ -12,7 +12,7 @@ body {
     overflow: hidden; /**disappear scroll bar**/
     background-image: url('Family.jpg');
     background-size: contain; 
-    background-position: left; 
+    background-position: top; 
     background-repeat: repeat-x; 
 	margin: 0;
 }
