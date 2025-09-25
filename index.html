@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ray 的英語冒險｜English Adventure for Kids</title>
+  <style>
+    :root{
+      --bg: #0b1b2b;
+      --panel: #0f2740;
+      --accent: #19c3ff;
+      --accent-2: #ffd166;
+      --ok: #00d08a;
+      --danger:#ff5c7a;
+      --text: #f2fbff;
+      --muted:#9ecae1;
+      --card-back:#114a6c;
+      --card-front:#102236;
+    }
+    *{ box-sizing: border-box }
+    html,body{ height:100% }
+    body{
+      margin:0; font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color:var(--text); background: radial-gradient(1200px 800px at 70% -10%, #0f3c5f 0, #0b1b2b 52%, #05101b 100%) fixed;
+      overflow-x:hidden;
+    }
+    .ocean-bg{
+      position:fixed; inset:0; pointer-events:none; z-index:-1;
+      background:
+        radial-gradient(300px 300px at 10% 10%, rgba(25,195,255,.15), transparent 60%),
+        radial-gradient(300px 300px at 90% 20%, rgba(0,208,138,.15), transparent 60%),
+        radial-gradient(200px 200px at 50% 80%, rgba(255,209,102,.12), transparent 60%);
+      filter: blur(0.5px);
+    }
+    header{
+      position:sticky; top:0; z-index:5; backdrop-filter: blur(8px) saturate(1.2);
+      background:linear-gradient(180deg, rgba(3,18,30,.85), rgba(3,18,30,.55));
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .wrap{ max-width:1100px; margin:0 auto; padding:16px; }
+    .brand{ display:flex; align-items:center; gap:12px; }
+    .brand .logo{ width:44px; height:44px; border-radius:14px; background: linear-gradient(135deg,var(--accent),#3dfbcb); box-shadow:0 8px 24px rgba(25,195,255,.35) inset,0 4px 16px rgba(0,0,0,.25); display:flex; align-items:center; justify-content:center; font-weight:900; color:#052233 }
+    .brand h1{ font-size:20px; margin:0; letter-spacing:.3px }
+
+    .bar{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; justify-content:space-between }
+    .controls{ display:flex; flex-wrap:wrap; gap:8px; align-items:center }
+
+    button, .btn{
+      appearance:none; border:0; padding:10px 14px; border-radius:14px; cursor:pointer; font-weight:700; letter-spacing:.3px;
+      background:linear-gradient(180deg, #1d84b5, #0e5f9b); color:white; box-shadow:0 4px 12px rgba(0,0,0,.3), inset 0 -2px 0 rgba(255,255,255,.15);
+      transition:.2s transform,.2s box-shadow;
+    }
+    button:hover{ transform: translateY(-1px); box-shadow:0 8px 16px rgba(0,0,0,.4), inset 0 -2px 0 rgba(255,255,255,.18) }
+    button:active{ transform: translateY(0) scale(.98) }
+    .btn-secondary{ background:linear-gradient(180deg,#1b374e,#102c45) }
+    .pill{ padding:8px 12px; border-radius:999px; background:#0c2a46; border:1px solid rgba(255,255,255,.08) }
+
+    .grid{ display:grid; grid-template-columns: 240px 1fr; gap:14px; padding:16px; max-width:1100px; margin:0 auto; min-height: 2000px; }
+    nav{
+      position:sticky; top:76px; align-self:start; display:flex; flex-direction:column; gap:8px; padding:10px; border-radius:16px;
+      background:rgba(7,27,46,.75); border:1px solid rgba(255,255,255,.08);
+    }
+    nav button{ text-align:left }
+    .active{ outline:2px solid var(--accent); }
+
+    main{ display:block;}
+    section.view{ display:none; }
+    section.view.show{ display:block; animation:fade .25s ease-out }
+    @keyframes fade{ from{ opacity:.0; transform:translateY(4px) } to{ opacity:1; transform:none } }
+
+    .panel{ background:rgba(8,38,62,.7); border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:14px; box-shadow:0 8px 32px rgba(0,0,0,.25) inset;min-height: 600px; }
+
+    .kpi{ display:grid; grid-template-columns: repeat(4,1fr); gap:10px }
+    .kpi .card{ background:linear-gradient(180deg,#0e4266,#07283f); padding:14px; border-radius:16px; border:1px solid rgba(255,255,255,.08) }
+    .kpi .value{ font-size:28px; font-weight:900 }
+    .kpi .label{ color:var(--muted); font-size:12px }
+
+    .flex{ display:flex; gap:14px; align-items:stretch }
+    .flex-col{ display:flex; flex-direction:column; gap:14px }
+    .grow{ flex:1 }
+
+    .card-stack{ display:grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap:12px; min-height: 400px; }
+
+    /* Flashcard */
+    .flash-wrap{ display:grid; grid-template-columns: 1fr 300px; gap:14px; min-height: 650px; }
+    .flash-card { perspective: 1400px;  position: relative; overflow: visible; }
+    .flash-card .inner{ width:100%; height:100%; position:relative; transform-style:preserve-3d; transition: transform .5s; }
+    .flash-card.flipped .inner{ transform: rotateY(180deg) }
+    .flash-face{
+      position:absolute; inset:0; border-radius:22px; border:1px solid rgba(255,255,255,.08); display:flex; align-items:center; justify-content:center; flex-direction:column;
+      backface-visibility:hidden; padding:18px; text-align:center;
+    }
+    .flash-face.front { background:linear-gradient(180deg,#09243b,#071b2c); opacity: 0; transition: opacity 0.3s;}
+	
+	  .flash-card:hover .flash-face.front {
+     opacity: 1;
+     }
+    .flash-face.back{ background:linear-gradient(180deg,#0b2d47,#0a2136); transform: rotateY(180deg) }
+    .flash-en{ font-size:60px; font-weight:900; letter-spacing:1px }
+    .flash-zh{ margin-top:20px; font-size:30px; color:var(--muted) }
+    
+     .page-turn3d {
+  position: absolute;
+  inset: -1px;                  /* tiny bleed for shadows */
+  border-radius: 22px;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  z-index: 4;                   /* on top of faces */
+  will-change: transform, opacity;
+}
+
+/* two faces of the turning sheet */
+.page-turn3d .face {
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  backface-visibility: hidden;
+  /* subtle paper texture made from layered gradients */
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 2px, transparent 2px 4px),
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.12)),
+    radial-gradient(140% 140% at 30% 10%, rgba(255,255,255,.12), transparent 60%),
+    linear-gradient(180deg,#0e2a42,#091b2e); /* close to your card tone */
+  box-shadow: 0 6px 18px rgba(0,0,0,.35);
+}
+
+/* back of the sheet (slightly darker, reversed texture) */
+.page-turn3d .face.back {
+  transform: rotateY(180deg);
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 2px, transparent 2px 4px),
+    linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.28)),
+    radial-gradient(140% 140% at 70% 90%, rgba(0,0,0,.18), transparent 60%),
+    linear-gradient(180deg,#0b2236,#07192a);
+}
+
+/* a thin edge to fake page thickness */
+.page-turn3d .edge {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 10px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, rgba(0,0,0,.35), rgba(255,255,255,.25), rgba(0,0,0,.35));
+  opacity: .65;
+  filter: blur(.2px);
+}
+
+/* moving specular highlight (the shiny streak) */
+.page-turn3d .shine {
+  position: absolute;
+  inset: -8px;
+  border-radius: 24px;
+  background: linear-gradient(100deg, rgba(255,255,255,.0) 30%, rgba(255,255,255,.45) 50%, rgba(255,255,255,.0) 70%);
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+
+/* direction presets */
+.page-turn3d.pf-next { transform-origin: right center; }
+.page-turn3d.pf-prev { transform-origin: left center; }
+.page-turn3d.pf-next .edge { right: -2px; }
+.page-turn3d.pf-prev .edge { left: -2px; }
+
+/* keyframes: add a slight arc, accelerate-in / ease-out, and fade at the end */
+@keyframes flipNext3D {
+  0%   { transform: rotateY(0deg) rotateZ(0deg) translateZ(0px);   opacity: .98; }
+  12%  { transform: rotateY(-18deg) rotateZ(-0.2deg) translateZ(1px); }
+  45%  { transform: rotateY(-88deg) rotateZ(-0.6deg) translateZ(2.5px); }
+  65%  { transform: rotateY(-120deg) rotateZ(-0.4deg) translateZ(1.2px); }
+  100% { transform: rotateY(-180deg) rotateZ(0deg) translateZ(0px); opacity: 0; }
+}
+@keyframes flipPrev3D {
+  0%   { transform: rotateY(0deg) rotateZ(0deg) translateZ(0px);   opacity: .98; }
+  12%  { transform: rotateY(18deg)  rotateZ(0.2deg)  translateZ(1px); }
+  45%  { transform: rotateY(88deg)  rotateZ(0.6deg)  translateZ(2.5px); }
+  65%  { transform: rotateY(120deg) rotateZ(0.4deg)  translateZ(1.2px); }
+  100% { transform: rotateY(180deg) rotateZ(0deg)    translateZ(0px); opacity: 0; }
+}
+
+/* shine sweeps across mid-turn */
+@keyframes shineRight {
+  0% { opacity: 0; transform: translateX(40%) rotateZ(-6deg); }
+  20% { opacity: .35; }
+  50% { opacity: .55; transform: translateX(-40%) rotateZ(-6deg); }
+  90% { opacity: 0; transform: translateX(-60%) rotateZ(-6deg); }
+  100% { opacity: 0; }
+}
+@keyframes shineLeft {
+  0% { opacity: 0; transform: translateX(-40%) rotateZ(6deg); }
+  20% { opacity: .35; }
+  50% { opacity: .55; transform: translateX(40%) rotateZ(6deg); }
+  90% { opacity: 0; transform: translateX(60%) rotateZ(6deg); }
+  100% { opacity: 0; }
+}
+
+/* accessibility: respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .page-turn3d,
+  .page-turn3d .shine { animation-duration: 120ms !important; }
+}
+
+/* Enhanced page curl effect for left-to-right turn */
+@keyframes turnLeft {
+  0% { 
+    transform: rotateY(0deg) rotateX(0deg) translateZ(0px);
+    opacity: 0;
+    filter: blur(0px);
+    box-shadow: 
+      0 0 20px rgba(0,0,0,0.1),
+      0 10px 40px rgba(0,0,0,0.15);
+  }
+  
+  5% {
+    transform: rotateY(2deg) rotateX(1deg) translateZ(5px);
+    opacity: 0.8;
+  }
+  
+  15% { 
+    transform: rotateY(15deg) rotateX(3deg) translateZ(15px);
+    opacity: 0.9;
+    filter: blur(0.5px);
+    box-shadow: 
+      0 5px 25px rgba(0,0,0,0.2),
+      0 15px 50px rgba(0,0,0,0.25),
+      0 25px 70px rgba(0,0,0,0.15);
+  }
+  
+  35% { 
+    transform: rotateY(45deg) rotateX(8deg) translateZ(25px);
+    opacity: 0.95;
+    filter: blur(1px);
+    box-shadow: 
+      0 8px 30px rgba(0,0,0,0.25),
+      0 20px 60px rgba(0,0,0,0.3),
+      0 35px 80px rgba(0,0,0,0.2);
+  }
+  
+  60% { 
+    transform: rotateY(85deg) rotateX(12deg) translateZ(30px);
+    opacity: 0.7;
+    filter: blur(1.5px);
+    box-shadow: 
+      0 12px 35px rgba(0,0,0,0.3),
+      0 25px 70px rgba(0,0,0,0.35),
+      0 40px 90px rgba(0,0,0,0.25);
+  }
+  
+  85% { 
+    transform: rotateY(135deg) rotateX(8deg) translateZ(20px);
+    opacity: 0.3;
+    filter: blur(2px);
+    box-shadow: 
+      0 8px 25px rgba(0,0,0,0.2),
+      0 15px 50px rgba(0,0,0,0.25);
+  }
+  
+  100% { 
+    transform: rotateY(180deg) rotateX(0deg) translateZ(0px);
+    opacity: 0;
+    filter: blur(0px);
+    box-shadow: 
+      0 0 10px rgba(0,0,0,0.1);
+  }
+}
+
+/* Add subtle ambient shadow to the card during turn */
+.flash-card.turning {
+  box-shadow: 
+    0 5px 20px rgba(0,0,0,0.15),
+    0 15px 40px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+
+    /* Quiz */
+    .quiz-choices{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:12px }
+    .choice{ padding:12px; background:linear-gradient(180deg,#133a57,#0e2a42); border-radius:14px; border:1px solid rgba(255,255,255,.08); cursor:pointer; }
+    .choice.correct{ outline:2px solid var(--ok) }
+    .choice.wrong{ outline:2px solid var(--danger) }
+
+    /* Memory (Poker) */
+    .board-controls{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:10px }
+    .board{ display:grid; grid-template-columns: repeat(6, 1fr); gap:10px }
+    @media (max-width: 900px){ .board{ grid-template-columns: repeat(4, 1fr) } }
+    @media (max-width: 600px){ .board{ grid-template-columns: repeat(3, 1fr) } }
+    .card{ height:110px; position:relative; perspective: 900px; }
+    .card .face{ position:absolute; inset:0; border-radius:16px; display:flex; align-items:center; justify-content:center; flex-direction:column; backface-visibility:hidden; transition: transform .45s; border:1px solid rgba(255,255,255,.1) }
+    .card .back{ background: radial-gradient(500px 120px at 50% -10%, rgba(25,195,255,.2), transparent 40%), var(--card-back); box-shadow:inset 0 0 40px rgba(0,0,0,.35) }
+    .card .front{ transform: rotateY(180deg); background: radial-gradient(300px 100px at 60% -10%, rgba(255,209,102,.2), transparent 40%), var(--card-front) }
+    .card.flipped .back{ transform: rotateY(180deg) }
+    .card.flipped .front{ transform: rotateY(0deg) }
+    .badge{ font-size:11px; opacity:.8 }
+    .big-en{ font-size:20px; font-weight:900 }
+    .small-zh{ font-size:13px; color:#cde6ff }
+
+    .sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip: rect(0 0 0 0); white-space:nowrap }
+
+    .muted{ color:var(--muted) }
+    .hint{ font-size:12px; color:#cde6ff; opacity:.85 }
+
+    .confetti{ position: fixed; left:0; top:0; width:100%; height:100%; pointer-events:none; overflow:hidden; }
+
+    .shadow-card{ background:linear-gradient(180deg,#0b2341,#091b2e); border:1px solid rgba(255,255,255,.1); padding:12px; border-radius:16px }
+
+    .table{ width:100%; border-collapse: collapse; font-size:14px }
+    .table th,.table td{ border-bottom:1px dashed rgba(255,255,255,.12); padding:8px 6px; text-align:left }
+
+    .tag{ background:#0b3252; padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.1); font-size:12px }
+
+    .link{ color:var(--accent); cursor:pointer; text-decoration:underline dotted }
+
+    input[type="file"], select, input[type="range"], input[type="number"], input[type="text"]{
+      background:#0c2a46; border:1px solid rgba(255,255,255,.12); color:var(--text); padding:8px 10px; border-radius:12px; outline:none
+    }
+    label{ font-size:12px; color:#a7c7e6 }
+
+    canvas{ image-rendering: crisp-edges }
+
+  </style>
+</head>
+<body>
+  <div class="ocean-bg" aria-hidden="true"></div>
+  <header>
+    <div class="wrap bar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">🐬</div>
+        <h1>Ray 的英語冒險 <span class="muted" style="font-weight:400">| English Adventure</span></h1>
+      </div>
+      <div class="controls">
+        <label class="pill">
+          <span>🔊 旁白</span>
+          <input id="toggleVoice" type="checkbox" checked style="vertical-align:middle; margin-left:6px" />
+        </label>
+        <label class="pill">語速 <input id="rate" type="range" min="0.6" max="1.4" value="1" step="0.1" style="width:120px; margin-left:6px"></label>
+        <label class="pill">英語音色 <select id="voiceSelect"></select></label>
+        <label class="pill">載入字表 CSV <input type="file" id="csvInput" accept=".csv,.txt" /></label>
+        <button id="downloadTpl" class="btn-secondary" title="下載 CSV 範本">⬇️ 範本</button>
+        <button id="exportProgress" class="btn-secondary" title="匯出進度 JSON">⤴️ 匯出進度</button>
+        <button id="resetProgress" title="重置所有記錄">🗑️ 重置</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="grid">
+    <nav id="nav">
+      <button class="btn nav-btn active" data-view="dashboard">🏠 儀表板 Dashboard</button>
+      <button class="btn nav-btn" data-view="flash">🃏 字卡 Flashcards</button>
+      <button class="btn nav-btn" data-view="quiz">❓ 測驗 Quiz</button>
+      <button class="btn nav-btn" data-view="memory">🧠 記憶配對 Poker</button>
+      <div class="hint" style="margin-top:6px">* 使用滑鼠點擊操作</div>
+      <div id="output" class="hint" style="margin-top:10px">上傳 CSV 後即可開始。若未上傳，將使用預設單字。</div>
+    </nav>
+
+    <main>
+      <!-- Dashboard -->
+      <section id="dashboard" class="view show">
+        <div class="panel">
+          <div class="kpi">
+            <div class="card"><div class="label">今日配對成功</div><div id="kpi-matches" class="value">0</div></div>
+            <div class="card"><div class="label">今日測驗得分</div><div id="kpi-quiz" class="value">0/0</div></div>
+            <div class="card"><div class="label">今日練習字卡</div><div id="kpi-cards" class="value">0</div></div>
+            <div class="card"><div class="label">連續學習天數</div><div id="kpi-streak" class="value">0 🔥</div></div>
+          </div>
+        </div>
+
+        <div class="flex" style="margin-top:12px">
+          <div class="panel grow">
+            <h3 style="margin:6px 0 8px">📈 最近 14 天進度</h3>
+            <canvas id="dailyChart" width="900" height="260" aria-label="進度折線圖" role="img"></canvas>
+          </div>
+          <div class="panel" style="width:320px">
+            <h3 style="margin:6px 0 8px">🏆 小成就 Achievements</h3>
+            <ul id="achievements" style="margin:0; padding-left:18px">
+              <li>第一次配對成功</li>
+              <li>連續 3 天學習</li>
+              <li>測驗滿分</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:12px">
+          <h3 style="margin:6px 0 8px">📒 今日詳細紀錄</h3>
+          <table class="table" id="todayTable">
+            <thead><tr><th>時間</th><th>事件</th><th>數量</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Flashcards -->
+      <section id="flash" class="view">
+        <div class="flash-wrap">
+          <div class="flash-card panel" id="flashCard" aria-live="polite" aria-label="字卡">
+            <div class="inner">
+              <div class="flash-face front">
+                <div class="badge"></div>
+                <div class="flash-en" id="flashEn"></div>
+                <div class="flash-zh" id="flashZh"></div>
+              </div>
+              <div class="flash-face back">
+                <div class="badge"></div>
+                <div class="flash-zh" style="font-size:28px" id="flashZhBack"></div>
+                <div class="flash-en" style="font-size:34px" id="flashEnBack"></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="flex-col">
+              <div>
+                <button id="btnFlip">🔁 翻面 Flip</button>
+                <button id="btnSpeak">🔊 朗讀 Read</button>
+              </div>
+              <div>
+                <button id="btnPrev" class="btn-secondary">⬅️ 上一張</button>
+                <button id="btnNext" class="btn-secondary">➡️ 下一張</button>
+              </div>
+              <div>
+                <button id="btnKnown" title="我會了">🌟 我會了</button>
+                <span class="hint">點擊可加到今日字卡數</span>
+              </div>
+              <div>
+                <label>抽題範圍（張數）：<input id="flashCount" type="number" min="4" max="40" step="2" value="100" style="width:80px"> </label>
+                <button id="btnShuffle">🔀 重新洗牌</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quiz -->
+      <section id="quiz" class="view">
+        <div class="panel">
+          <div class="board-controls">
+            <label>題數 <input id="quizCount" type="number" min="4" max="20" value="8" style="width:80px"></label>
+            <button id="startQuiz">▶️ 開始測驗</button>
+            <div id="quizScore" class="pill">得分：0 / 0</div>
+          </div>
+          <div class="shadow-card" id="quizArea" style="min-height:160px">
+            <div class="muted">按下「開始測驗」後，會播放英語語音，請點擊正確中文。</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Memory / Poker Matching -->
+      <section id="memory" class="view">
+        <div class="panel">
+          <div class="board-controls">
+            <label>難度 Pairs
+              <select id="pairsSelect">
+                <option value="6">容易 6</option>
+                <option value="8" selected>普通 8</option>
+                <option value="10">進階 10</option>
+                <option value="12">高手 12</option>
+              </select>
+            </label>
+            <button id="startGame">🎮 開始遊戲</button>
+            <div class="pill">配對 <span id="matched">0</span> / <span id="totalPairs">0</span></div>
+            <div class="pill">嘗試 <span id="attempts">0</span></div>
+            <div class="pill">時間 <span id="timer">00:00</span></div>
+          </div>
+          <div id="board" class="board" aria-live="polite" aria-label="記憶配對遊戲棋盤"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
+
+  <script>
+    // =====================
+    // Data & CSV handling
+    // =====================
+    const defaultWords = [
+      { en: 'apple', zh: '蘋果' , example: 'This is an apple'},
+      { en: 'banana', zh: '香蕉', example: 'This is a banana' },
+      { en: 'cat', zh: '貓', example: 'This is a cat' },
+      { en: 'dog', zh: '狗', example: 'This is a dog' },
+      { en: 'bird', zh: '鳥', example: 'This is a bird' },
+      { en: 'orange', zh: '橘子', example: 'This is an orange' },
+      { en: 'car', zh: '汽車', example: 'This is a car' },
+      { en: 'train', zh: '火車', example: 'This is a train' },
+      { en: 'water', zh: '水', example: 'This is water' },
+      { en: 'milk', zh: '牛奶' , example: 'This is a milk'},
+      { en: 'book', zh: '書', example: 'This is a book' },
+      { en: 'pencil', zh: '鉛筆', example: 'This is a pencil' },
+      { en: 'sun', zh: '太陽', example: 'This is the sun' },
+      { en: 'moon', zh: '月亮', example: 'This is the moon' },
+      { en: 'star', zh: '星星', example: 'This is a star' },
+      { en: 'fish', zh: '魚' , example: 'This is a fish'},
+      { en: 'bread', zh: '麵包' , example: 'This is a loaf of bread'},
+      { en: 'egg', zh: '雞蛋', example: 'This is an egg' }
+    ];
+
+    let deck = [...defaultWords];
+    let csvLoaded = false;
+
+    function parseCSV(text){
+      // Handle BOM
+      if(text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+      const rows = [];
+      let i=0, field='', row=[], inQuotes=false;
+      while(i < text.length){
+        const c = text[i];
+        if(c === '"'){
+          if(inQuotes && text[i+1] === '"'){ field += '"'; i++; }
+          else inQuotes = !inQuotes;
+        }else if(c === ',' && !inQuotes){ row.push(field.trim()); field=''; }
+        else if((c === '\n' || c === '\r') && !inQuotes){ if(field!=='' || row.length){ row.push(field.trim()); field=''; rows.push(row); row=[] } }
+        else{ field += c }
+        i++;
+      }
+      if(field!=='' || row.length){ row.push(field.trim()); rows.push(row) }
+
+      // map to objects: expect headers [english, chinese]
+      let startIdx = 0;
+      let headers = rows[0]?.map(h=>h.toLowerCase());
+      
+      if(headers && (headers.includes('english') || headers.includes('en') || headers.includes('chinese') || headers.includes('example') || headers.includes('sentence'))){
+        startIdx = 1;
+      }else{
+        headers = ['english','chinese', 'example'];
+      }
+      const data = [];
+      for(let r=startIdx; r<rows.length; r++){
+        const cols = rows[r];
+        if(!cols || cols.length===0) continue;
+        const en = (cols[0]||'').trim();
+        const zh = (cols[1]||'').trim();
+        const example = (cols[2]||'').trim();
+        if(en && zh && example ) data.push({ en, zh, example });
+      }
+      return data;
+    }
+
+    // File input handler (Joe provided snippet fixed & integrated)
+    document.getElementById('csvInput').addEventListener('change', function(e){
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev){
+        try{
+          const text = ev.target.result;
+          const parsed = parseCSV(text);
+          if(parsed.length){ deck = parsed; csvLoaded = true; document.getElementById('output').innerHTML = "<p style='color:#4be085'>CSV 載入完成！可開始練習或遊戲。</p>"; resetModulesAfterDeckChange(); }
+          else{ document.getElementById('output').innerHTML = "<p style='color:#ff8a8a'>CSV 格式無資料，使用預設單字。</p>" }
+        }catch(err){
+          console.error(err);
+          document.getElementById('output').innerHTML = "<p style='color:#ff8a8a'>解析 CSV 失敗，請檢查檔案格式（english,chinese）。</p>";
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById('downloadTpl').addEventListener('click', ()=>{
+      const tpl = 'english,chinese\napple,蘋果\nbanana,香蕉\ncat,貓\ndog,狗\nwater,水';
+      const blob = new Blob([tpl], {type:'text/csv;charset=utf-8'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'vocab-template.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    function resetModulesAfterDeckChange(){
+      // refresh flashcard indices, quiz pool, etc.
+      setupFlashcards();
+      quizState.started = false; document.getElementById('quizArea').innerHTML = '<div class="muted">按下「開始測驗」後，會播放英語語音，請點擊正確中文。</div>';
+      // reset memory pair counter text
+      document.getElementById('matched').textContent='0';
+    }
+
+    // =====================
+    // Navigation
+    // =====================
+    const views = ['dashboard','flash','quiz','memory'];
+    document.querySelectorAll('.nav-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const view = btn.dataset.view;
+        views.forEach(v=> document.getElementById(v).classList.toggle('show', v===view));
+        if(view==='dashboard') renderDashboard();
+      })
+    })
+
+    // =====================
+    // Voice / TTS
+    // =====================
+    const voiceSelect = document.getElementById('voiceSelect');
+    const toggleVoice = document.getElementById('toggleVoice');
+    const rate = document.getElementById('rate');
+    let voices = [];
+
+    function loadVoices(){
+      voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+      voiceSelect.innerHTML = '';
+      const enVoices = voices.filter(v=> v.lang && v.lang.toLowerCase().startsWith('en'));
+      const list = enVoices.length ? enVoices : voices;
+      list.forEach((v,i)=>{
+        const opt = document.createElement('option');
+        opt.value = v.name; opt.textContent = `${v.name} (${v.lang})`;
+        voiceSelect.appendChild(opt);
+      })
+      // pick a default English voice if available
+      //const preferred = enVoices.find(v=>/us|uk|gb/i.test(v.lang)) || enVoices[0] || voices[0];
+      const preferred = voices.find(v => v.name.includes('Christopher')) || enVoices.find(v=>/us|uk|gb/i.test(v.lang)) || enVoices[0] || voices[0];
+      if(preferred){ voiceSelect.value = preferred.name }
+    }
+    if('speechSynthesis' in window){
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    function speakEN(text){
+      if(!toggleVoice.checked) return;
+      if(!('speechSynthesis' in window)) return;
+      const utter = new SpeechSynthesisUtterance(`${text}. Repeat: ${text}.`);
+      utter.rate = parseFloat(rate.value)||1;
+      const chosen = voices.find(v=> v.name === voiceSelect.value);
+      if(chosen) utter.voice = chosen;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utter);
+    }
+
+    // =====================
+    // Progress & Dashboard
+    // =====================
+    const LS_KEY = 'ray_english_progress_v1';
+    function todayStr(){ const d = new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}` }
+
+    function readProgress(){
+      try{ return JSON.parse(localStorage.getItem(LS_KEY)) || { days:{}, last:'' } }catch{ return { days:{}, last:'' } }
+    }
+    function writeProgress(p){ localStorage.setItem(LS_KEY, JSON.stringify(p)) }
+
+    function addEventLog(type, amount){
+      const p = readProgress();
+      const t = todayStr();
+      p.days[t] ||= { matches:0, quizCorrect:0, quizTotal:0, cards:0, events:[], seconds:0 };
+      if(type==='match') p.days[t].matches += amount;
+      if(type==='quizCorrect') p.days[t].quizCorrect += amount;
+      if(type==='quizTotal') p.days[t].quizTotal += amount;
+      if(type==='card') p.days[t].cards += amount;
+      p.days[t].events.push({ time:new Date().toLocaleTimeString(), type, amount });
+      p.last = t;
+      writeProgress(p);
+      renderDashboard();
+    }
+
+    function getStreak(p){
+      // compute consecutive days ending today
+      const dates = Object.keys(p.days).sort();
+      if(!dates.length) return 0;
+      const one = 86400000;
+      const today = new Date(todayStr());
+      let streak = 0;
+      for(let i=0;i<60;i++){
+        const d = new Date(today - i*one); const key = d.toISOString().slice(0,10);
+        if(p.days[key]) streak++; else break;
+      }
+      return streak;
+    }
+
+    function renderDashboard(){
+      const p = readProgress();
+      const t = todayStr();
+      const day = p.days[t] || {matches:0, quizCorrect:0, quizTotal:0, cards:0, events:[]};
+      document.getElementById('kpi-matches').textContent = day.matches;
+      document.getElementById('kpi-quiz').textContent = `${day.quizCorrect}/${day.quizTotal}`;
+      document.getElementById('kpi-cards').textContent = day.cards;
+      document.getElementById('kpi-streak').textContent = getStreak(p) + ' 🔥';
+
+      // table
+      const tbody = document.querySelector('#todayTable tbody');
+      tbody.innerHTML = '';
+      (day.events||[]).slice(-12).reverse().forEach(ev=>{
+        const tr = document.createElement('tr');
+        const map = { match:'配對成功', quizCorrect:'測驗答對', quizTotal:'測驗作答', card:'字卡練習' };
+        tr.innerHTML = `<td>${ev.time}</td><td>${map[ev.type]||ev.type}</td><td>${ev.amount}</td>`;
+        tbody.appendChild(tr);
+      })
+
+      drawChart(p);
+      renderAchievements(p);
+    }
+
+    function drawChart(p){
+      const canvas = document.getElementById('dailyChart');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0,0,canvas.width, canvas.height);
+      const one = 86400000, today = new Date(todayStr());
+      const labels = [], values = [];
+      for(let i=13;i>=0;i--){
+        const d = new Date(today - i*one); const key = d.toISOString().slice(0,10);
+        labels.push((d.getMonth()+1)+'/'+d.getDate());
+        const day = p.days[key];
+        const score = day ? (day.matches*2 + day.quizCorrect + Math.floor(day.cards/3)) : 0;
+        values.push(score);
+      }
+      // axes
+      ctx.globalAlpha = .9; ctx.strokeStyle = 'rgba(255,255,255,.15)';
+      ctx.beginPath(); ctx.moveTo(40,220); ctx.lineTo(880,220); ctx.stroke();
+      // ticks
+      ctx.fillStyle = 'rgba(255,255,255,.6)'; ctx.font = '12px Segoe UI';
+      for(let i=0;i<labels.length;i++){
+        const x = 40 + i*(840/13);
+        ctx.fillText(labels[i], x-12, 240);
+      }
+      // line
+      const max = Math.max(4, ...values);
+      ctx.beginPath();
+      values.forEach((v,i)=>{
+        const x = 40 + i*(840/13);
+        const y = 220 - (v/max)*180;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.strokeStyle = '#19c3ff'; ctx.lineWidth = 2; ctx.stroke();
+      // points
+      values.forEach((v,i)=>{
+        const x = 40 + i*(840/13); const y = 220 - (v/Math.max(1,max))*180;
+        ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fillStyle = '#ffd166'; ctx.fill();
+      })
+    }
+
+    function renderAchievements(p){
+      const ul = document.getElementById('achievements');
+      const t = todayStr(); const day = p.days[t] || {};
+      const out = [];
+      if(day.matches >= 1) out.push('🐣 第一次配對成功');
+      if(getStreak(p) >= 3) out.push('🔥 連續 3 天學習');
+      if(day.quizTotal>0 && day.quizCorrect===day.quizTotal) out.push('🌟 今日測驗滿分');
+      if(day.cards >= 10) out.push('📚 今日字卡 ≥ 10');
+      if(!out.length) out.push('保持努力！今天再玩一局或做一份測驗吧。');
+      ul.innerHTML = out.map(x=>`<li>${x}</li>`).join('');
+    }
+
+    document.getElementById('exportProgress').addEventListener('click', ()=>{
+      const blob = new Blob([JSON.stringify(readProgress(),null,2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'progress.json'; a.click(); URL.revokeObjectURL(a.href);
+    })
+    document.getElementById('resetProgress').addEventListener('click', ()=>{
+      if(confirm('確定要重置所有進度？This cannot be undone.')){ localStorage.removeItem(LS_KEY); renderDashboard(); alert('已重置。') }
+    })
+
+    // =====================
+    // Flashcards
+    // =====================
+    let flashOrder = [], flashIndex = 0;
+
+    function setupFlashcards(){
+      const count = Math.min(parseInt(document.getElementById('flashCount').value)||100, deck.length);
+      const idxs = [...Array(deck.length).keys()];
+      shuffle(idxs);
+      flashOrder = idxs.slice(0, count);
+      flashIndex = 0;
+      updateFlashcard();
+      document.getElementById('flashCard').classList.remove('flipped');
+    }
+
+    function updateFlashcard(){
+      const item = deck[flashOrder[flashIndex]];
+      if(!item) return;
+      document.getElementById('flashEn').textContent = item.en;
+      document.getElementById('flashZh').textContent = item.zh;
+      document.getElementById('flashEnBack').textContent = item.example;
+      // document.getElementById('flashZhBack').textContent = item.zh;
+    }
+
+   function pageFlip3D(direction, onMidpoint) {
+  
+  
+  const DURATION = 720;
+  const card = document.getElementById('flashCard');
+
+  // Execute the content change immediately instead of waiting for animation
+  
+  onMidpoint && onMidpoint();
+
+  // Still create the visual effect if possible
+  const wrap = document.createElement('div');
+  wrap.className = 'page-turn3d ' + (direction === 'next' ? 'pf-next' : 'pf-prev');
+  
+  const front = document.createElement('div');
+  front.className = 'face front';
+  const back = document.createElement('div');
+  back.className = 'face back';
+
+  const edge = document.createElement('div');
+  edge.className = 'edge';
+
+  const shine = document.createElement('div');
+  shine.className = 'shine';
+  
+  wrap.appendChild(front);
+  wrap.appendChild(back);
+   wrap.appendChild(edge);
+  wrap.appendChild(shine);
+  card.appendChild(wrap);
+
+  wrap.style.animation = (direction === 'next' ? 'flipNext3D' : 'flipPrev3D') + ` ${DURATION}ms cubic-bezier(.22,.61,.36,1) both`;
+
+  // Clean up after animation (or timeout as fallback)
+  const cleanup = () => wrap.remove();
+  
+  wrap.addEventListener('animationend', cleanup, { once: true });
+  setTimeout(cleanup, DURATION + 100); // Fallback cleanup
+}
+
+    document.getElementById('btnFlip').addEventListener('click', ()=>{
+      document.getElementById('flashCard').classList.toggle('flipped');
+    })
+    document.getElementById('btnSpeak').addEventListener('click', () => {
+      const item = deck[flashOrder[flashIndex]];
+      if(!item) return;
+
+     const card = document.getElementById('flashCard');
+     const isFlipped = card.classList.contains('flipped');
+
+      if(isFlipped){
+         
+       speakEN(item.example);
+       //speakEN(`${item.example}. 中文：${item.zh}`);
+
+       }else{
+        // Read front vocabulary
+        speakEN(item.en);
+      }
+    });
+
+    document.getElementById('btnPrev').addEventListener('click', ()=>{
+  pageFlip3D('prev', () => {
+    flashIndex = (flashIndex - 1 + flashOrder.length) % flashOrder.length;
+    document.getElementById('flashCard').classList.remove('flipped');
+    updateFlashcard();
+  });
+});
+
+document.getElementById('btnNext').addEventListener('click', ()=>{
+  console.log('Next button clicked, current index:', flashIndex);
+  pageFlip3D('next', () => {
+    console.log('Animation midpoint reached');
+    flashIndex = (flashIndex + 1) % flashOrder.length;
+    console.log('New index:', flashIndex);
+    document.getElementById('flashCard').classList.remove('flipped');
+    updateFlashcard();
+    console.log('Card updated');
+  });
+});
+
+
+    document.getElementById('btnKnown').addEventListener('click', ()=>{ addEventLog('card',1); sparkle(); })
+    document.getElementById('btnShuffle').addEventListener('click', setupFlashcards)
+
+    // =====================
+    // Quiz
+    // =====================
+    const quizState = { started:false, pool:[], idx:0, score:0, total:0 };
+
+    function makeQuizPool(n){
+      const count = Math.min(n, deck.length);
+      const idxs = [...Array(deck.length).keys()]; shuffle(idxs);
+      return idxs.slice(0,count).map(i=> deck[i]);
+    }
+
+    function startQuiz(){
+      const n = Math.min(parseInt(document.getElementById('quizCount').value)||8, deck.length);
+      quizState.pool = makeQuizPool(n);
+      quizState.idx = 0; quizState.score = 0; quizState.total = 0; quizState.started = true;
+      renderQuizQuestion();
+    }
+
+    function renderQuizQuestion(){
+      const area = document.getElementById('quizArea');
+      area.innerHTML = '';
+      if(quizState.idx >= quizState.pool.length){
+        area.innerHTML = `<h3>完成！🎉 得分 ${quizState.score} / ${quizState.total}</h3>`;
+        return;
+      }
+      const q = quizState.pool[quizState.idx];
+      const choices = new Set([q.zh]);
+      while(choices.size < Math.min(4, deck.length)){
+        const c = deck[Math.floor(Math.random()*deck.length)].zh; choices.add(c);
+      }
+      const choiceArr = Array.from(choices); shuffle(choiceArr);
+      const box = document.createElement('div');
+      box.innerHTML = `<div>請聽並選擇正確中文：<span class="tag">${q.en}</span></div>`;
+      const btnSpeak = document.createElement('button'); btnSpeak.textContent='🔊 播放'; btnSpeak.onclick=()=> speakEN(q.en);
+      box.appendChild(btnSpeak);
+      const grid = document.createElement('div'); grid.className='quiz-choices';
+      choiceArr.forEach(ch=>{
+        const c = document.createElement('div'); c.className='choice'; c.textContent = ch; c.onclick=()=> selectChoice(c, ch===q.zh);
+        grid.appendChild(c);
+      })
+      box.appendChild(grid); area.appendChild(box);
+      // auto-play after render
+      setTimeout(()=> speakEN(q.en), 150);
+
+      function selectChoice(el, correct){
+        if(correct){ el.classList.add('correct'); quizState.score++; addEventLog('quizCorrect',1); sparkle(); }
+        else{ el.classList.add('wrong') }
+        document.querySelectorAll('.choice').forEach(x=> x.style.pointerEvents='none');
+        quizState.total++; addEventLog('quizTotal',1);
+        setTimeout(()=>{ quizState.idx++; renderQuizQuestion(); updateQuizScore() }, 500);
+      }
+      updateQuizScore();
+    }
+    function updateQuizScore(){ document.getElementById('quizScore').textContent = `得分：${quizState.score} / ${quizState.total}` }
+
+    document.getElementById('startQuiz').addEventListener('click', startQuiz);
+
+    // =====================
+    // Memory / Poker Matching Game
+    // =====================
+    let first=null, second=null, lock=false, timerInt=null, seconds=0, matches=0, attempts=0, totalPairs=0;
+
+    function startGame(){
+      const pairs = parseInt(document.getElementById('pairsSelect').value)||8;
+      totalPairs = Math.min(pairs, Math.floor(deck.length));
+      document.getElementById('totalPairs').textContent = totalPairs;
+      const idxs = [...Array(deck.length).keys()]; shuffle(idxs);
+      const selected = idxs.slice(0,totalPairs).map(i=> deck[i]);
+      // double them
+      const cards = [];
+      selected.forEach((w,idx)=>{
+        cards.push({ id:idx+"A", en:w.en, zh:w.zh });
+        cards.push({ id:idx+"B", en:w.en, zh:w.zh });
+      })
+      shuffle(cards);
+      // render
+      const board = document.getElementById('board'); board.innerHTML='';
+      cards.forEach((c,i)=>{
+        const el = document.createElement('div'); el.className='card'; el.dataset.key = c.en + '|' + c.zh; el.dataset.id = c.id;
+        el.innerHTML = `
+          <div class="face back" aria-hidden="true">🫧</div>
+          <div class="face front">
+            <div class="big-en">${c.en}</div>
+            <div class="small-zh">${c.zh}</div>
+          </div>`;
+        el.addEventListener('click', ()=> flipCard(el));
+        board.appendChild(el);
+      })
+      // reset state
+      first = second = null; lock=false; seconds=0; matches=0; attempts=0;
+      document.getElementById('matched').textContent = '0';
+      document.getElementById('attempts').textContent = '0';
+      updateTimerText();
+      clearInterval(timerInt); timerInt = setInterval(()=>{ seconds++; updateTimerText() }, 1000);
+    }
+
+    function flipCard(el){
+      if(lock) return;
+      if(el.classList.contains('flipped')) return;
+      el.classList.add('flipped');
+      if(!first){ first = el; return; }
+      second = el; lock = true; attempts++; document.getElementById('attempts').textContent = attempts;
+      const key1 = first.dataset.key, key2 = second.dataset.key;
+      if(key1 === key2){
+        // match
+        matches++; document.getElementById('matched').textContent = matches;
+        const [en] = key1.split('|');
+        setTimeout(()=>{ speakEN(en); sparkle(); addEventLog('match',1); }, 180);
+        setTimeout(()=>{ resetTurn(true) }, 350);
+        if(matches === totalPairs){
+          clearInterval(timerInt);
+          setTimeout(()=> celebrateWin(), 300);
+        }
+      }else{
+        // not a match
+        setTimeout(()=>{ first.classList.remove('flipped'); second.classList.remove('flipped'); resetTurn(false) }, 700);
+      }
+    }
+    function resetTurn(matched){ first=null; second=null; lock=false }
+
+    function updateTimerText(){
+      const m = String(Math.floor(seconds/60)).padStart(2,'0');
+      const s = String(seconds%60).padStart(2,'0');
+      document.getElementById('timer').textContent = `${m}:${s}`;
+    }
+
+    function celebrateWin(){
+      sparkle(140);
+      alert(`太棒了！全部配對完成！用時 ${document.getElementById('timer').textContent}`);
+    }
+
+    // =====================
+    // Utilities: shuffle, confetti
+    // =====================
+    function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]] } return arr }
+
+    function sparkle(amount=60){
+      const box = document.getElementById('confetti');
+      for(let i=0;i<amount;i++){
+        const s = document.createElement('div');
+        const size = Math.random()*6+4;
+        s.style.cssText = `position:absolute;width:${size}px;height:${size}px;left:${Math.random()*100}%;;top:-10px;background:hsl(${Math.random()*360},90%,60%);opacity:.9;border-radius:${Math.random()>.5?50:2}%; transform:rotate(${Math.random()*360}deg)`;
+        box.appendChild(s);
+        const duration = 800 + Math.random()*900;
+        s.animate([
+          { transform:`translateY(0) rotate(0deg)`, opacity:.95 },
+          { transform:`translate(${(Math.random()-.5)*120}px, ${window.innerHeight+40}px) rotate(${Math.random()*720}deg)`, opacity:.9 }
+        ], { duration, easing:'cubic-bezier(.2,.7,.2,1)' }).onfinish = ()=> s.remove();
+      }
+    }
+
+    // =====================
+    // Wire up
+    // =====================
+    document.getElementById('startGame').addEventListener('click', startGame);
+    function updatePairsLabel(){ document.getElementById('totalPairs').textContent = document.getElementById('pairsSelect').value }
+    updatePairsLabel();
+
+    // Init
+    setupFlashcards();
+    renderDashboard();
+
+    // Helper: when leaving tab, stop long speaking
+    document.addEventListener('visibilitychange', ()=>{ if(document.hidden && 'speechSynthesis' in window) window.speechSynthesis.cancel() });
+  </script>
+</body>
+</html>
